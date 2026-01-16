@@ -19,7 +19,7 @@ const detailIcons: LucideIcon[] = [
 
 function WorkshopDetails() {
   return (
-    <section className="px-4 py-12 sm:px-6 lg:px-8">
+    <section className="px-4 pb-14 pt-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -32,6 +32,10 @@ function WorkshopDetails() {
           <h2 className="mt-2 text-3xl font-black text-slate-950">
             Everything parents need to know at a glance
           </h2>
+          <p className="mt-3 leading-7 text-slate-700">
+            Clear batch information, simple pricing, and an online format designed
+            for children to learn from home.
+          </p>
         </motion.div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
@@ -45,7 +49,7 @@ function WorkshopDetails() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.42, delay: index * 0.04 }}
-                className="rounded-lg border border-white bg-white/90 p-5 shadow-md shadow-orange-100"
+                className="rounded-lg border border-white bg-white/95 p-5 shadow-md shadow-orange-100"
               >
                 <div
                   className={`mb-4 inline-flex h-11 w-11 items-center justify-center rounded-lg ${detail.className}`}
