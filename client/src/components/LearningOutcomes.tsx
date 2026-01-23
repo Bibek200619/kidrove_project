@@ -1,16 +1,22 @@
 import { motion } from 'framer-motion'
 import { BookOpenCheck, CheckCircle2, Rocket } from 'lucide-react'
 import { learningOutcomes } from '../data/workshopData'
+import {
+  cardReveal,
+  revealViewport,
+  sectionIntro,
+  staggerContainer,
+} from '../utils/animations'
 
 function LearningOutcomes() {
   return (
     <section className="bg-sky-50 px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.8fr_1.2fr]">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.35 }}
-          transition={{ duration: 0.45 }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={revealViewport}
+          variants={sectionIntro}
         >
           <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
             <BookOpenCheck className="h-6 w-6" />
@@ -27,14 +33,18 @@ function LearningOutcomes() {
           </p>
         </motion.div>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          {learningOutcomes.map((outcome, index) => (
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={revealViewport}
+          variants={staggerContainer}
+          className="grid gap-4 md:grid-cols-2"
+        >
+          {learningOutcomes.map((outcome) => (
             <motion.article
               key={outcome}
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.25 }}
-              transition={{ duration: 0.42, delay: index * 0.04 }}
+              variants={cardReveal}
+              whileHover={{ y: -5, scale: 1.01 }}
               className="flex gap-4 rounded-lg border border-sky-100 bg-white p-5 shadow-sm"
             >
               <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-emerald-600" />
@@ -43,10 +53,8 @@ function LearningOutcomes() {
           ))}
 
           <motion.article
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, amount: 0.25 }}
-            transition={{ duration: 0.42, delay: learningOutcomes.length * 0.04 }}
+            variants={cardReveal}
+            whileHover={{ y: -5, scale: 1.01 }}
             className="flex gap-4 rounded-lg bg-amber-100 p-5 text-amber-900 shadow-sm"
           >
             <Rocket className="mt-1 h-5 w-5 shrink-0" />
@@ -54,7 +62,7 @@ function LearningOutcomes() {
               Mini projects help every child finish with something they can talk about.
             </p>
           </motion.article>
-        </div>
+        </motion.div>
       </div>
     </section>
   )

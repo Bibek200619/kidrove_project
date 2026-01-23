@@ -9,6 +9,12 @@ import {
   User,
 } from 'lucide-react'
 import { registrationHighlights } from '../data/workshopData'
+import {
+  cardReveal,
+  revealViewport,
+  sectionIntro,
+  staggerContainer,
+} from '../utils/animations'
 
 type FormValues = {
   name: string
@@ -130,10 +136,10 @@ function RegistrationForm() {
     <section id="registration" className="bg-white px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.35 }}
-          transition={{ duration: 0.45 }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={revealViewport}
+          variants={sectionIntro}
           className="rounded-lg bg-gradient-to-br from-amber-100 via-orange-50 to-emerald-100 p-6"
         >
           <p className="text-sm font-bold uppercase text-rose-600">Registration</p>
@@ -145,21 +151,28 @@ function RegistrationForm() {
             details, timing, and the online joining process.
           </p>
 
-          <div className="mt-6 space-y-3">
+          <motion.div
+            variants={staggerContainer}
+            className="mt-6 space-y-3"
+          >
             {registrationHighlights.map((item) => (
-              <div key={item} className="flex items-center gap-3 font-semibold text-slate-800">
+              <motion.div
+                key={item}
+                variants={cardReveal}
+                className="flex items-center gap-3 font-semibold text-slate-800"
+              >
                 <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600" />
                 <span>{item}</span>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </motion.div>
 
         <motion.form
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.25 }}
-          transition={{ duration: 0.45, delay: 0.05 }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={revealViewport}
+          variants={cardReveal}
           onSubmit={handleSubmit}
           noValidate
           className="rounded-lg border border-slate-100 bg-white p-5 shadow-xl shadow-slate-100"

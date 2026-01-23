@@ -8,6 +8,12 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import { workshopDetails } from '../data/workshopData'
+import {
+  cardReveal,
+  revealViewport,
+  sectionIntro,
+  staggerContainer,
+} from '../utils/animations'
 
 const detailIcons: LucideIcon[] = [
   UserRound,
@@ -22,10 +28,10 @@ function WorkshopDetails() {
     <section className="px-4 pb-14 pt-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.35 }}
-          transition={{ duration: 0.45 }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={revealViewport}
+          variants={sectionIntro}
           className="mb-7 max-w-2xl"
         >
           <p className="text-sm font-bold uppercase text-rose-600">Workshop details</p>
@@ -38,17 +44,21 @@ function WorkshopDetails() {
           </p>
         </motion.div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={revealViewport}
+          variants={staggerContainer}
+          className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5"
+        >
           {workshopDetails.map((detail, index) => {
             const Icon = detailIcons[index]
 
             return (
               <motion.article
                 key={detail.label}
-                initial={{ opacity: 0, y: 18 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.42, delay: index * 0.04 }}
+                variants={cardReveal}
+                whileHover={{ y: -6, scale: 1.01 }}
                 className="rounded-lg border border-white bg-white/95 p-5 shadow-md shadow-orange-100"
               >
                 <div
@@ -62,7 +72,7 @@ function WorkshopDetails() {
               </motion.article>
             )
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   )
