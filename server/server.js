@@ -6,7 +6,7 @@ const enquiryRoutes = require('./routes/enquiry.routes')
 const { closeMongoConnection, isMongoConfigured } = require('./db/mongo')
 
 const app = express()
-const PORT = process.env.PORT || 5001
+const PORT = process.env.PORT || 5000
 const HOST = process.env.HOST || '127.0.0.1'
 const configuredCorsOrigins = process.env.CLIENT_URL
   ? process.env.CLIENT_URL.split(',').map((origin) => origin.trim())

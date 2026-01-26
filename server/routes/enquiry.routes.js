@@ -1,25 +1,11 @@
 const express = require('express')
-const {
-  getEnquiryCollection,
-  isMongoConfigured,
-} = require('../db/mongo')
+const { getEnquiryCollection, isMongoConfigured } = require('../db/mongo')
+const { isValidIndianPhoneNumber } = require('../utils/phone')
+const { workshopSnapshot } = require('../config/workshop')
 
 const router = express.Router()
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const workshopSnapshot = {
-  title: 'AI & Robotics Summer Workshop',
-  ageGroup: '8-14 Years',
-  duration: '4 Weeks',
-  mode: 'Online',
-  fee: 'INR 2,999',
-  startDate: '15 July 2026',
-}
-
-function isValidPhone(phone) {
-  const digits = String(phone).replace(/\D/g, '')
-  return digits.length >= 10 && digits.length <= 15
-}
 
 router.post('/enquiry', async (req, res) => {
   const name = String(req.body?.name ?? '').trim()
@@ -40,10 +26,10 @@ router.post('/enquiry', async (req, res) => {
     })
   }
 
-  if (!isValidPhone(phone)) {
+  if (!isValidIndianPhoneNumber(phone)) {
     return res.status(400).json({
       success: false,
-      message: 'Please provide a valid phone number',
+      message: 'Please provide a valid Indian phone number',
     })
   }
 
@@ -65,7 +51,7 @@ router.post('/enquiry', async (req, res) => {
 
     return res.status(201).json({
       success: true,
-      message: 'Enquiry submitted successfully',
+      message: 'Enquiry submitted successfully.',
       ...(insertedId ? { enquiryId: insertedId } : {}),
     })
   } catch (error) {
