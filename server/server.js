@@ -18,9 +18,7 @@ function isAllowedOrigin(origin) {
   }
 
   const isConfiguredOrigin = configuredCorsOrigins.includes(origin)
-  const isLocalDevOrigin =
-    process.env.NODE_ENV !== 'production' &&
-    /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)
+  const isLocalDevOrigin = /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)
 
   return isConfiguredOrigin || isLocalDevOrigin
 }
