@@ -1,8 +1,0 @@
-.DS_Store
-.env
-node_modules/
-dist/
-*.log
-*.tsbuildinfo
-client/node_modules/.tmp/
-.DS_Store
