@@ -18,9 +18,7 @@ function isAllowedOrigin(origin) {
   }
 
   const isConfiguredOrigin = configuredCorsOrigins.includes(origin)
-  const isLocalDevOrigin =
-    process.env.NODE_ENV !== 'production' &&
-    /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)
+  const isLocalDevOrigin = /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)
 
   return isConfiguredOrigin || isLocalDevOrigin
 }
@@ -33,6 +31,15 @@ app.use(
   }),
 )
 app.use(express.json({ limit: '25kb' }))
+
+// Request Logger
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`)
+  if (req.method === 'POST') {
+    console.log('Body:', JSON.stringify(req.body, null, 2))
+  }
+  next()
+})
 
 app.use((error, _req, res, next) => {
   if (error instanceof SyntaxError && error.status === 400 && 'body' in error) {
