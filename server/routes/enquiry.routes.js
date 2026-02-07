@@ -1,13 +1,13 @@
 const express = require('express')
 const router = express.Router()
-const { getEnquiryCollection, isMongoConfigured } = require('../db/mongo')
 const { saveEnquiryToFile } = require('../db/fileStorage')
+const { getEnquiryCollection, isMongoConfigured } = require('../db/mongo')
 const { isValidIndianPhoneNumber } = require('../utils/phone')
 const { workshopSnapshot } = require('../config/workshop')
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
-function canUseFileStorageFallback() {
+function canUseLocalFileStorage() {
   return (
     process.env.ENABLE_FILE_STORAGE === 'true' ||
     (!process.env.VERCEL && process.env.NODE_ENV !== 'production')
@@ -51,29 +51,25 @@ router.post('/enquiry', async (req, res) => {
 
   try {
     let insertedId
+    let storage
 
     if (isMongoConfigured()) {
-      try {
-        const collection = await getEnquiryCollection()
-        const result = await collection.insertOne(enquiryData)
-        insertedId = result.insertedId?.toString()
-      } catch (mongoError) {
-        console.warn('MongoDB failed, falling back to file storage:', mongoError.message)
-      }
-    }
-
-    if (!insertedId && canUseFileStorageFallback()) {
+      const collection = await getEnquiryCollection()
+      const result = await collection.insertOne(enquiryData)
+      insertedId = result.insertedId.toString()
+      storage = 'mongodb'
+    } else if (canUseLocalFileStorage()) {
       insertedId = await saveEnquiryToFile(enquiryData)
-    }
-
-    if (!insertedId) {
-      throw new Error('All storage methods failed')
+      storage = 'local-file'
+    } else {
+      throw new Error('MONGODB_URI is required outside local development')
     }
 
     return res.status(201).json({
       success: true,
       message: 'Enquiry submitted successfully.',
       enquiryId: insertedId,
+      storage,
     })
   } catch (error) {
     console.error('Failed to save enquiry:', error)

@@ -3,7 +3,12 @@ require('dotenv').config({ quiet: true })
 const express = require('express')
 const cors = require('cors')
 const enquiryRoutes = require('./routes/enquiry.routes')
-const { closeMongoConnection, isMongoConfigured } = require('./db/mongo')
+const { STORAGE_FILE } = require('./db/fileStorage')
+const {
+  closeMongoConnection,
+  getMongoStorageInfo,
+  isMongoConfigured,
+} = require('./db/mongo')
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -23,6 +28,13 @@ function isAllowedOrigin(origin) {
   return isConfiguredOrigin || isLocalDevOrigin
 }
 
+function canUseLocalFileStorage() {
+  return (
+    process.env.ENABLE_FILE_STORAGE === 'true' ||
+    (!process.env.VERCEL && process.env.NODE_ENV !== 'production')
+  )
+}
+
 app.use(
   cors({
     origin(origin, callback) {
@@ -35,7 +47,7 @@ app.use(express.json({ limit: '25kb' }))
 // Request Logger
 app.use((req, res, next) => {
   console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`)
-  if (req.method === 'POST') {
+  if (req.method === 'POST' && process.env.NODE_ENV !== 'production') {
     console.log('Body:', JSON.stringify(req.body, null, 2))
   }
   next()
@@ -53,10 +65,18 @@ app.use((error, _req, res, next) => {
 })
 
 app.get('/api/health', (_req, res) => {
+  const mongo = getMongoStorageInfo()
+
   res.json({
     success: true,
     message: 'API is running',
-    mongoConfigured: isMongoConfigured(),
+    storage: isMongoConfigured()
+      ? 'mongodb'
+      : canUseLocalFileStorage()
+        ? 'local-file'
+        : 'unconfigured',
+    mongo,
+    storageFile: STORAGE_FILE,
   })
 })
 
@@ -80,11 +100,17 @@ app.use((error, _req, res, _next) => {
 function startServer() {
   const server = app.listen(PORT, HOST, () => {
     console.log(`Server running on http://${HOST}:${PORT}`)
-    console.log(
-      isMongoConfigured()
-        ? 'MongoDB persistence is enabled'
-        : 'MongoDB persistence is disabled. Set MONGODB_URI to enable it.',
-    )
+    if (isMongoConfigured()) {
+      console.log('Saving enquiries to MongoDB')
+      return
+    }
+
+    if (canUseLocalFileStorage()) {
+      console.log(`Saving enquiries locally to ${STORAGE_FILE}`)
+      return
+    }
+
+    console.warn('No persistent storage configured. Set MONGODB_URI.')
   })
 
   async function shutdown() {

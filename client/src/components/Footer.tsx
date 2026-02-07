@@ -1,4 +1,4 @@
-import { ExternalLink } from 'lucide-react'
+import { Send } from 'lucide-react'
 import { workshopInfo } from '../data/workshopData'
 import BrandLogo from './BrandLogo'
 
@@ -13,13 +13,11 @@ function Footer() {
           <span>Starts {workshopInfo.startDate}</span>
           <span>{workshopInfo.fee}</span>
           <a
-            href="https://www.kidrove.com/"
-            target="_blank"
-            rel="noreferrer"
+            href="#registration"
             className="inline-flex items-center gap-2 font-semibold text-amber-200 hover:text-amber-100"
           >
-            <ExternalLink className="h-4 w-4" />
-            kidrove.com
+            <Send className="h-4 w-4" />
+            Register
           </a>
         </div>
       </div>

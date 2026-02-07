@@ -2,7 +2,7 @@
 
 Responsive full-stack workshop landing page for Kidrove's **AI & Robotics Summer Workshop** interview assignment.
 
-The app includes a React + TypeScript landing page, client-side form validation, loading and success/error states, and an Express API endpoint for registration enquiries. MongoDB persistence is integrated through the official MongoDB driver when `MONGODB_URI` is configured.
+The app includes a React + TypeScript landing page, client-side form validation, loading and success/error states, and an Express API endpoint for registration enquiries. Enquiries are stored in MongoDB when `MONGODB_URI` is configured, with local JSON storage available as a development fallback.
 
 ## Features
 
@@ -12,7 +12,8 @@ The app includes a React + TypeScript landing page, client-side form validation,
 - Tailwind CSS styling with Framer Motion animations
 - Client-side validation for name, email, and phone number
 - Express `POST /api/enquiry` endpoint with server-side validation
-- MongoDB enquiry storage when a MongoDB URI is provided
+- MongoDB enquiry storage when `MONGODB_URI` is configured
+- Local JSON enquiry storage fallback in `enquiries.json`
 
 ## Workshop Details
 
@@ -50,11 +51,13 @@ The app includes a React + TypeScript landing page, client-side form validation,
 │   │   ├── index.css
 │   │   └── main.tsx
 │   ├── package.json
+│   ├── vercel.json
 │   └── vite.config.ts
 ├── server/
 │   ├── config/
 │   │   └── workshop.js          # Workshop snapshot stored with each enquiry
 │   ├── db/
+│   │   ├── fileStorage.js       # Local JSON enquiry storage
 │   │   └── mongo.js             # MongoDB connection and collection helpers
 │   ├── routes/
 │   │   └── enquiry.routes.js    # POST /api/enquiry
@@ -62,6 +65,7 @@ The app includes a React + TypeScript landing page, client-side form validation,
 │   │   └── phone.js             # Indian phone number validation & formatting
 │   ├── .env.example
 │   ├── package.json
+│   ├── vercel.json
 │   └── server.js
 └── README.md
 ```
@@ -95,18 +99,14 @@ Backend environment variables:
 HOST=127.0.0.1
 PORT=5000
 CLIENT_URL=http://localhost:5173,http://127.0.0.1:5173
-MONGODB_URI=mongodb://127.0.0.1:27017
+MONGODB_URI=mongodb+srv://USER:PASSWORD@HOST/
 MONGODB_DB=kidrove_workshop
 MONGODB_COLLECTION=enquiries
+ENQUIRIES_FILE=../enquiries.json
+ENABLE_FILE_STORAGE=false
 ```
 
-MongoDB persistence is enabled when `MONGODB_URI` has a value:
-
-```env
-MONGODB_URI=mongodb://127.0.0.1:27017
-```
-
-For quick API testing without MongoDB, leave `MONGODB_URI` blank in `server/.env`.
+When `MONGODB_URI` is set, the backend writes enquiries to MongoDB. In local development only, if `MONGODB_URI` is blank, the backend writes to the repository-level `enquiries.json` file. You can change `ENQUIRIES_FILE` to use a different local JSON file.
 
 Start the backend:
 
@@ -135,14 +135,11 @@ If `VITE_API_URL` is not set, the form posts to `http://127.0.0.1:5000/api/enqui
 
 ## Deploy To Vercel
 
-This repo is set up as two separate apps:
-
-- `client/`: Vite React frontend
-- `server/`: Express backend
+Deploy this repo as two Vercel projects: one for the backend and one for the frontend.
 
 ### Backend Project
 
-Create one Vercel project for the backend with these settings:
+Create a Vercel project with these settings:
 
 ```text
 Root Directory: server
@@ -161,11 +158,11 @@ MONGODB_DB=kidrove_workshop
 MONGODB_COLLECTION=enquiries
 ```
 
-`HOST` and `PORT` are only needed for local development. Vercel provides the runtime for the Express app.
+Do not set `HOST` or `PORT` on Vercel. Vercel provides the serverless runtime. The backend `server/vercel.json` routes requests to `server.js`.
 
 ### Frontend Project
 
-Create a second Vercel project for the frontend with these settings:
+Create a second Vercel project with these settings:
 
 ```text
 Root Directory: client
@@ -175,13 +172,13 @@ Output Directory: dist
 Install Command: npm install
 ```
 
-After the backend is deployed, set this frontend environment variable in Vercel:
+Set this frontend environment variable after the backend is deployed:
 
 ```env
 VITE_API_URL=https://your-backend-project.vercel.app
 ```
 
-The registration form appends `/api/enquiry` automatically, so `VITE_API_URL` can be either the backend origin or the full enquiry endpoint.
+The registration form appends `/api/enquiry` automatically, so `VITE_API_URL` can be either the backend origin or the full enquiry endpoint. The frontend `client/vercel.json` rewrites all routes to `index.html` for SPA navigation.
 
 ### Deployment Checks
 
@@ -199,7 +196,7 @@ curl -X POST https://your-backend-project.vercel.app/api/enquiry \
   -d '{"name":"Aarav Mehta","email":"parent@example.com","phone":"9876543210"}'
 ```
 
-For production, keep `MONGODB_URI` configured. File storage is only a local development fallback because Vercel function storage is not persistent.
+On Vercel, `MONGODB_URI` is required for persistent enquiry storage.
 
 ## API
 
@@ -270,7 +267,7 @@ npm start
 
 ## Notes
 
-- MongoDB is integrated through the official driver and writes enquiries into the configured collection when `MONGODB_URI` is set.
-- MongoDB is optional. The API works without it — enquiries are validated and acknowledged but not persisted.
+- Enquiries are persisted to MongoDB when `MONGODB_URI` is configured.
+- Local JSON storage remains available during local development when MongoDB is not configured.
 - Phone number validation lives in `server/utils/phone.js` and the workshop metadata snapshot lives in `server/config/workshop.js` for easy updates.
 - The project intentionally keeps source code at the repository root with separate `client/` and `server/` apps for a clean submission.

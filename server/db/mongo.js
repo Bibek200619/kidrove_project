@@ -11,6 +11,14 @@ function isMongoConfigured() {
   return Boolean(uri)
 }
 
+function getMongoStorageInfo() {
+  return {
+    configured: isMongoConfigured(),
+    database: dbName,
+    collection: collectionName,
+  }
+}
+
 async function getEnquiryCollection() {
   if (!isMongoConfigured()) {
     return null
@@ -18,7 +26,7 @@ async function getEnquiryCollection() {
 
   if (!connectionPromise) {
     client = new MongoClient(uri, {
-      serverSelectionTimeoutMS: 3000,
+      serverSelectionTimeoutMS: 5000,
     })
     connectionPromise = client.connect()
   }
@@ -40,5 +48,6 @@ async function closeMongoConnection() {
 module.exports = {
   closeMongoConnection,
   getEnquiryCollection,
+  getMongoStorageInfo,
   isMongoConfigured,
 }
