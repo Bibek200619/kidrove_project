@@ -7,6 +7,13 @@ const { workshopSnapshot } = require('../config/workshop')
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
+function canUseFileStorageFallback() {
+  return (
+    process.env.ENABLE_FILE_STORAGE === 'true' ||
+    (!process.env.VERCEL && process.env.NODE_ENV !== 'production')
+  )
+}
+
 router.post('/enquiry', async (req, res) => {
   const name = String(req.body?.name ?? '').trim()
   const email = String(req.body?.email ?? '').trim().toLowerCase()
@@ -55,7 +62,7 @@ router.post('/enquiry', async (req, res) => {
       }
     }
 
-    if (!insertedId) {
+    if (!insertedId && canUseFileStorageFallback()) {
       insertedId = await saveEnquiryToFile(enquiryData)
     }
 

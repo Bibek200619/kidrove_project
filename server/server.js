@@ -77,21 +77,31 @@ app.use((error, _req, res, _next) => {
   })
 })
 
-const server = app.listen(PORT, HOST, () => {
-  console.log(`Server running on http://${HOST}:${PORT}`)
-  console.log(
-    isMongoConfigured()
-      ? 'MongoDB persistence is enabled'
-      : 'MongoDB persistence is disabled. Set MONGODB_URI to enable it.',
-  )
-})
-
-async function shutdown() {
-  await closeMongoConnection()
-  server.close(() => {
-    process.exit(0)
+function startServer() {
+  const server = app.listen(PORT, HOST, () => {
+    console.log(`Server running on http://${HOST}:${PORT}`)
+    console.log(
+      isMongoConfigured()
+        ? 'MongoDB persistence is enabled'
+        : 'MongoDB persistence is disabled. Set MONGODB_URI to enable it.',
+    )
   })
+
+  async function shutdown() {
+    await closeMongoConnection()
+    server.close(() => {
+      process.exit(0)
+    })
+  }
+
+  process.on('SIGINT', shutdown)
+  process.on('SIGTERM', shutdown)
+
+  return server
 }
 
-process.on('SIGINT', shutdown)
-process.on('SIGTERM', shutdown)
+if (require.main === module) {
+  startServer()
+}
+
+module.exports = app

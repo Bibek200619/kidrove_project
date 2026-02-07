@@ -133,6 +133,74 @@ VITE_API_URL=http://127.0.0.1:5000
 
 If `VITE_API_URL` is not set, the form posts to `http://127.0.0.1:5000/api/enquiry`.
 
+## Deploy To Vercel
+
+This repo is set up as two separate apps:
+
+- `client/`: Vite React frontend
+- `server/`: Express backend
+
+### Backend Project
+
+Create one Vercel project for the backend with these settings:
+
+```text
+Root Directory: server
+Framework Preset: Other
+Build Command: leave empty
+Output Directory: leave empty
+Install Command: npm install
+```
+
+Set these backend environment variables in Vercel:
+
+```env
+CLIENT_URL=https://your-frontend-project.vercel.app
+MONGODB_URI=mongodb+srv://USER:PASSWORD@HOST/
+MONGODB_DB=kidrove_workshop
+MONGODB_COLLECTION=enquiries
+```
+
+`HOST` and `PORT` are only needed for local development. Vercel provides the runtime for the Express app.
+
+### Frontend Project
+
+Create a second Vercel project for the frontend with these settings:
+
+```text
+Root Directory: client
+Framework Preset: Vite
+Build Command: npm run build
+Output Directory: dist
+Install Command: npm install
+```
+
+After the backend is deployed, set this frontend environment variable in Vercel:
+
+```env
+VITE_API_URL=https://your-backend-project.vercel.app
+```
+
+The registration form appends `/api/enquiry` automatically, so `VITE_API_URL` can be either the backend origin or the full enquiry endpoint.
+
+### Deployment Checks
+
+Backend health check:
+
+```bash
+curl https://your-backend-project.vercel.app/api/health
+```
+
+Backend enquiry check:
+
+```bash
+curl -X POST https://your-backend-project.vercel.app/api/enquiry \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Aarav Mehta","email":"parent@example.com","phone":"9876543210"}'
+```
+
+For production, keep `MONGODB_URI` configured. File storage is only a local development fallback because Vercel function storage is not persistent.
+
 ## API
 
 ### Health Check
