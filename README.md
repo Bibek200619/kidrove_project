@@ -54,6 +54,8 @@ The app includes a React + TypeScript landing page, client-side form validation,
 │   ├── vercel.json
 │   └── vite.config.ts
 ├── server/
+│   ├── api/
+│   │   └── [...path].js         # Vercel serverless function entrypoint
 │   ├── config/
 │   │   └── workshop.js          # Workshop snapshot stored with each enquiry
 │   ├── db/
@@ -65,7 +67,6 @@ The app includes a React + TypeScript landing page, client-side form validation,
 │   │   └── phone.js             # Indian phone number validation & formatting
 │   ├── .env.example
 │   ├── package.json
-│   ├── vercel.json
 │   └── server.js
 └── README.md
 ```
@@ -158,7 +159,7 @@ MONGODB_DB=kidrove_workshop
 MONGODB_COLLECTION=enquiries
 ```
 
-Do not set `HOST` or `PORT` on Vercel. Vercel provides the serverless runtime. The backend `server/vercel.json` routes requests to `server.js`.
+Do not set `HOST` or `PORT` on Vercel. Vercel provides the serverless runtime. The backend `server/api/[...path].js` file exports the Express app as a Vercel function.
 
 ### Frontend Project
 
