@@ -159,7 +159,7 @@ MONGODB_DB=kidrove_workshop
 MONGODB_COLLECTION=enquiries
 ```
 
-Do not set `HOST` or `PORT` on Vercel. Vercel provides the serverless runtime. The backend `server/api/[...path].js` file exports the Express app as a Vercel function.
+Do not set `HOST` or `PORT` on Vercel. Vercel provides the serverless runtime. The backend `server/api/[...path].js` file exports the Express app as a Vercel function. The backend allows the configured `CLIENT_URL`, local development origins, and Vercel preview domains.
 
 ### Frontend Project
 

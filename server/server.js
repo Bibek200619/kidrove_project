@@ -18,14 +18,15 @@ const configuredCorsOrigins = process.env.CLIENT_URL
   : []
 
 function isAllowedOrigin(origin) {
-  if (!origin || configuredCorsOrigins.length === 0) {
+  if (!origin) {
     return true
   }
 
   const isConfiguredOrigin = configuredCorsOrigins.includes(origin)
   const isLocalDevOrigin = /^http:\/\/(localhost|127\.0\.0\.1):\d+$/.test(origin)
+  const isVercelAppOrigin = /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(origin)
 
-  return isConfiguredOrigin || isLocalDevOrigin
+  return isConfiguredOrigin || isLocalDevOrigin || isVercelAppOrigin
 }
 
 function canUseLocalFileStorage() {
