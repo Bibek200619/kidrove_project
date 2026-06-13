@@ -5,3 +5,4 @@ dist/
 *.log
 *.tsbuildinfo
 client/node_modules/.tmp/
+.DS_Store
