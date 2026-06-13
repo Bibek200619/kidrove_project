@@ -29,28 +29,37 @@ The app includes a React + TypeScript landing page, client-side form validation,
 .
 ├── client/
 │   ├── public/
+│   │   └── favicon.svg
 │   ├── src/
 │   │   ├── assets/
 │   │   │   └── workshop-hero.png
 │   │   ├── components/
+│   │   │   ├── BrandLogo.tsx
 │   │   │   ├── FAQ.tsx
 │   │   │   ├── Footer.tsx
 │   │   │   ├── Hero.tsx
 │   │   │   ├── LearningOutcomes.tsx
 │   │   │   ├── RegistrationForm.tsx
+│   │   │   ├── ScrollProgress.tsx
 │   │   │   └── WorkshopDetails.tsx
 │   │   ├── data/
 │   │   │   └── workshopData.ts
+│   │   ├── utils/
+│   │   │   └── animations.ts
 │   │   ├── App.tsx
 │   │   ├── index.css
 │   │   └── main.tsx
 │   ├── package.json
 │   └── vite.config.ts
 ├── server/
+│   ├── config/
+│   │   └── workshop.js          # Workshop snapshot stored with each enquiry
 │   ├── db/
-│   │   └── mongo.js
+│   │   └── mongo.js             # MongoDB connection and collection helpers
 │   ├── routes/
-│   │   └── enquiry.routes.js
+│   │   └── enquiry.routes.js    # POST /api/enquiry
+│   ├── utils/
+│   │   └── phone.js             # Indian phone number validation & formatting
 │   ├── .env.example
 │   ├── package.json
 │   └── server.js
@@ -84,7 +93,7 @@ Backend environment variables:
 
 ```env
 HOST=127.0.0.1
-PORT=5001
+PORT=5000
 CLIENT_URL=http://localhost:5173,http://127.0.0.1:5173
 MONGODB_URI=mongodb://127.0.0.1:27017
 MONGODB_DB=kidrove_workshop
@@ -114,15 +123,15 @@ npm run dev
 ```
 
 Frontend: `http://localhost:5173`  
-Backend: `http://127.0.0.1:5001`
+Backend: `http://127.0.0.1:5000`
 
 Optional frontend environment variable:
 
 ```env
-VITE_API_URL=http://127.0.0.1:5001
+VITE_API_URL=http://127.0.0.1:5000
 ```
 
-If `VITE_API_URL` is not set, the form posts to `http://127.0.0.1:5001/api/enquiry`.
+If `VITE_API_URL` is not set, the form posts to `http://127.0.0.1:5000/api/enquiry`.
 
 ## API
 
@@ -153,7 +162,7 @@ Success response:
 ```json
 {
   "success": true,
-  "message": "Enquiry submitted successfully"
+  "message": "Enquiry submitted successfully."
 }
 ```
 
@@ -169,7 +178,7 @@ Validation error response:
 Manual API check:
 
 ```bash
-curl -X POST http://127.0.0.1:5001/api/enquiry \
+curl -X POST http://127.0.0.1:5000/api/enquiry \
   -H "Content-Type: application/json" \
   -d '{"name":"Aarav Mehta","email":"parent@example.com","phone":"9876543210"}'
 ```
@@ -194,5 +203,6 @@ npm start
 ## Notes
 
 - MongoDB is integrated through the official driver and writes enquiries into the configured collection when `MONGODB_URI` is set.
-- If `MONGODB_URI` is blank, the API still validates and returns the assignment success response, which keeps local review simple.
+- MongoDB is optional. The API works without it — enquiries are validated and acknowledged but not persisted.
+- Phone number validation lives in `server/utils/phone.js` and the workshop metadata snapshot lives in `server/config/workshop.js` for easy updates.
 - The project intentionally keeps source code at the repository root with separate `client/` and `server/` apps for a clean submission.

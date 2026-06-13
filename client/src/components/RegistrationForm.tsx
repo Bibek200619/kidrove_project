@@ -23,6 +23,7 @@ type FormValues = {
 }
 
 type FormErrors = Partial<Record<keyof FormValues, string>>
+type TextField = keyof FormValues
 
 type ApiResponse = {
   success: boolean
@@ -39,7 +40,7 @@ function resolveEnquiryEndpoint(apiUrl?: string) {
   const trimmedUrl = apiUrl?.trim().replace(/\/$/, '')
 
   if (!trimmedUrl) {
-    return 'http://127.0.0.1:5001/api/enquiry'
+    return 'http://127.0.0.1:5000/api/enquiry'
   }
 
   return trimmedUrl.endsWith('/api/enquiry')
@@ -52,7 +53,7 @@ const enquiryEndpoint = resolveEnquiryEndpoint(import.meta.env.VITE_API_URL)
 function validateForm(values: FormValues) {
   const errors: FormErrors = {}
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-  const phoneDigits = values.phone.replace(/\D/g, '')
+  const normalizedPhone = values.phone.replace(/[\s+-]/g, '')
 
   if (!values.name.trim()) {
     errors.name = 'Name is required.'
@@ -66,9 +67,16 @@ function validateForm(values: FormValues) {
 
   if (!values.phone.trim()) {
     errors.phone = 'Phone number is required.'
-  } else if (phoneDigits.length < 10 || phoneDigits.length > 15) {
-    errors.phone = 'Enter a valid phone number.'
+  } else if (
+    !(
+      /^\d+$/.test(normalizedPhone) &&
+      (normalizedPhone.length === 10 ||
+        (normalizedPhone.length === 12 && normalizedPhone.startsWith('91')))
+    )
+  ) {
+    errors.phone = 'Enter a valid Indian phone number.'
   }
+
 
   return errors
 }
@@ -80,11 +88,12 @@ function RegistrationForm() {
   const [statusMessage, setStatusMessage] = useState('')
   const [isSuccess, setIsSuccess] = useState(false)
 
-  const handleChange = (field: keyof FormValues, value: string) => {
+  const handleChange = (field: TextField, value: string) => {
     setValues((current) => ({ ...current, [field]: value }))
     setErrors((current) => ({ ...current, [field]: undefined }))
     setStatusMessage('')
   }
+
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -253,6 +262,8 @@ function RegistrationForm() {
                 </p>
               )}
             </label>
+
+
           </div>
 
           <button
