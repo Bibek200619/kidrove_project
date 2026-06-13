@@ -1,9 +1,9 @@
 const express = require('express')
+const router = express.Router()
 const { getEnquiryCollection, isMongoConfigured } = require('../db/mongo')
+const { saveEnquiryToFile } = require('../db/fileStorage')
 const { isValidIndianPhoneNumber } = require('../utils/phone')
 const { workshopSnapshot } = require('../config/workshop')
-
-const router = express.Router()
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
@@ -33,26 +33,40 @@ router.post('/enquiry', async (req, res) => {
     })
   }
 
+  const enquiryData = {
+    name,
+    email,
+    phone,
+    workshop: workshopSnapshot,
+    source: 'workshop-landing-page',
+    createdAt: new Date(),
+  }
+
   try {
     let insertedId
 
     if (isMongoConfigured()) {
-      const collection = await getEnquiryCollection()
-      const result = await collection.insertOne({
-        name,
-        email,
-        phone,
-        workshop: workshopSnapshot,
-        source: 'workshop-landing-page',
-        createdAt: new Date(),
-      })
-      insertedId = result.insertedId?.toString()
+      try {
+        const collection = await getEnquiryCollection()
+        const result = await collection.insertOne(enquiryData)
+        insertedId = result.insertedId?.toString()
+      } catch (mongoError) {
+        console.warn('MongoDB failed, falling back to file storage:', mongoError.message)
+      }
+    }
+
+    if (!insertedId) {
+      insertedId = await saveEnquiryToFile(enquiryData)
+    }
+
+    if (!insertedId) {
+      throw new Error('All storage methods failed')
     }
 
     return res.status(201).json({
       success: true,
       message: 'Enquiry submitted successfully.',
-      ...(insertedId ? { enquiryId: insertedId } : {}),
+      enquiryId: insertedId,
     })
   } catch (error) {
     console.error('Failed to save enquiry:', error)
