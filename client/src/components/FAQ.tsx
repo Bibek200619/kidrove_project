@@ -2,6 +2,12 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronDown, CircleHelp } from 'lucide-react'
 import { faqs } from '../data/workshopData'
+import {
+  cardReveal,
+  revealViewport,
+  sectionIntro,
+  staggerContainer,
+} from '../utils/animations'
 
 function FAQ() {
   const [openIndex, setOpenIndex] = useState(0)
@@ -10,10 +16,10 @@ function FAQ() {
     <section className="bg-[#fffaf2] px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.75fr_1.25fr]">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.35 }}
-          transition={{ duration: 0.45 }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={revealViewport}
+          variants={sectionIntro}
         >
           <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-sky-100 text-sky-700">
             <CircleHelp className="h-6 w-6" />
@@ -27,17 +33,21 @@ function FAQ() {
           </p>
         </motion.div>
 
-        <div className="space-y-4">
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={revealViewport}
+          variants={staggerContainer}
+          className="space-y-4"
+        >
           {faqs.map((faq, index) => {
             const isOpen = openIndex === index
 
             return (
               <motion.article
                 key={faq.question}
-                initial={{ opacity: 0, y: 14 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.38, delay: index * 0.04 }}
+                variants={cardReveal}
+                whileHover={{ y: -4 }}
                 className="rounded-lg border border-orange-100 bg-white/95 shadow-sm"
               >
                 <button
@@ -68,7 +78,7 @@ function FAQ() {
               </motion.article>
             )
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   )
