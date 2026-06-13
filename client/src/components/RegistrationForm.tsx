@@ -8,6 +8,7 @@ import {
   Send,
   User,
 } from 'lucide-react'
+import { registrationHighlights } from '../data/workshopData'
 
 type FormValues = {
   name: string
@@ -32,7 +33,7 @@ function resolveEnquiryEndpoint(apiUrl?: string) {
   const trimmedUrl = apiUrl?.trim().replace(/\/$/, '')
 
   if (!trimmedUrl) {
-    return 'http://localhost:5001/api/enquiry'
+    return 'http://127.0.0.1:5001/api/enquiry'
   }
 
   return trimmedUrl.endsWith('/api/enquiry')
@@ -126,7 +127,7 @@ function RegistrationForm() {
   }
 
   return (
-    <section id="registration" className="bg-white px-4 py-12 sm:px-6 lg:px-8">
+    <section id="registration" className="bg-white px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr]">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -145,11 +146,7 @@ function RegistrationForm() {
           </p>
 
           <div className="mt-6 space-y-3">
-            {[
-              'Live online classes for ages 8–14',
-              'Project-led AI and robotics learning',
-              'Simple explanations, no prior coding needed',
-            ].map((item) => (
+            {registrationHighlights.map((item) => (
               <div key={item} className="flex items-center gap-3 font-semibold text-slate-800">
                 <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600" />
                 <span>{item}</span>
@@ -171,7 +168,7 @@ function RegistrationForm() {
             <label className="block">
               <span className="mb-2 flex items-center gap-2 font-bold text-slate-800">
                 <User className="h-4 w-4 text-sky-700" />
-                Parent Name
+                Full Name
               </span>
               <input
                 type="text"
@@ -179,7 +176,7 @@ function RegistrationForm() {
                 value={values.name}
                 onChange={(event) => handleChange('name', event.target.value)}
                 className="min-h-12 w-full rounded-lg border border-slate-200 bg-slate-50 px-4 text-slate-900 outline-none transition focus:border-sky-500 focus:bg-white focus:ring-4 focus:ring-sky-100"
-                placeholder="Bibek Kumar Shah"
+                placeholder="Aarav Mehta"
                 autoComplete="name"
                 aria-invalid={Boolean(errors.name)}
                 aria-describedby={errors.name ? 'name-error' : undefined}
@@ -231,6 +228,7 @@ function RegistrationForm() {
                 className="min-h-12 w-full rounded-lg border border-slate-200 bg-slate-50 px-4 text-slate-900 outline-none transition focus:border-rose-500 focus:bg-white focus:ring-4 focus:ring-rose-100"
                 placeholder="9876543210"
                 autoComplete="tel"
+                inputMode="tel"
                 aria-invalid={Boolean(errors.phone)}
                 aria-describedby={errors.phone ? 'phone-error' : undefined}
                 disabled={isSubmitting}
@@ -247,7 +245,7 @@ function RegistrationForm() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-slate-950 px-6 py-3 font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950"
+            className="mt-6 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-lg bg-slate-950 px-6 py-3 font-bold text-white transition hover:bg-slate-800 disabled:cursor-not-allowed disabled:bg-slate-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-950"
           >
             {isSubmitting ? (
               <>

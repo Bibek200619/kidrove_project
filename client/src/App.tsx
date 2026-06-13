@@ -7,7 +7,7 @@ import WorkshopDetails from './components/WorkshopDetails'
 
 function App() {
   return (
-    <div className="min-h-screen overflow-hidden bg-gradient-to-br from-orange-50 via-cyan-50 to-yellow-100 text-slate-900">
+    <div className="min-h-screen overflow-hidden bg-[#fffaf2] text-slate-900">
       <Hero />
       <WorkshopDetails />
       <LearningOutcomes />

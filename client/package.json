@@ -1,7 +1,8 @@
 {
-  "name": "client",
+  "name": "kidrove-workshop-client",
   "private": true,
   "version": "0.0.0",
+  "description": "React landing page for the AI & Robotics Summer Workshop.",
   "type": "module",
   "scripts": {
     "dev": "vite",

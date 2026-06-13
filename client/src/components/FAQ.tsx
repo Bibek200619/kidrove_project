@@ -7,7 +7,7 @@ function FAQ() {
   const [openIndex, setOpenIndex] = useState(0)
 
   return (
-    <section className="px-4 py-12 sm:px-6 lg:px-8">
+    <section className="bg-[#fffaf2] px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.75fr_1.25fr]">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -38,7 +38,7 @@ function FAQ() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
                 transition={{ duration: 0.38, delay: index * 0.04 }}
-                className="rounded-lg border border-white bg-white/90 shadow-sm"
+                className="rounded-lg border border-orange-100 bg-white/95 shadow-sm"
               >
                 <button
                   type="button"

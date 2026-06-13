@@ -4,7 +4,7 @@ import { learningOutcomes } from '../data/workshopData'
 
 function LearningOutcomes() {
   return (
-    <section className="bg-white/70 px-4 py-12 sm:px-6 lg:px-8">
+    <section className="bg-sky-50 px-4 py-14 sm:px-6 lg:px-8">
       <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.8fr_1.2fr]">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -22,8 +22,8 @@ function LearningOutcomes() {
             Skills children can use beyond the workshop
           </h2>
           <p className="mt-4 leading-7 text-slate-700">
-            The sessions keep technical ideas simple, visual, and project-led so
-            children can understand how smart machines work.
+            Sessions keep technical ideas simple, visual, and project-led so
+            children understand how smart machines work before they build.
           </p>
         </motion.div>
 
@@ -35,7 +35,7 @@ function LearningOutcomes() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.25 }}
               transition={{ duration: 0.42, delay: index * 0.04 }}
-              className="flex gap-4 rounded-lg border border-slate-100 bg-white p-5 shadow-sm"
+              className="flex gap-4 rounded-lg border border-sky-100 bg-white p-5 shadow-sm"
             >
               <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-emerald-600" />
               <p className="font-semibold leading-7 text-slate-800">{outcome}</p>
@@ -47,7 +47,7 @@ function LearningOutcomes() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.25 }}
             transition={{ duration: 0.42, delay: learningOutcomes.length * 0.04 }}
-            className="flex gap-4 rounded-lg bg-amber-100 p-5 text-amber-800 shadow-sm"
+            className="flex gap-4 rounded-lg bg-amber-100 p-5 text-amber-900 shadow-sm"
           >
             <Rocket className="mt-1 h-5 w-5 shrink-0" />
             <p className="font-bold leading-7">

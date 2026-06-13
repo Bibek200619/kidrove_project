@@ -1,4 +1,4 @@
-import { Bot, Mail } from 'lucide-react'
+import { Bot, ExternalLink } from 'lucide-react'
 import { workshopInfo } from '../data/workshopData'
 
 function Footer() {
@@ -21,11 +21,13 @@ function Footer() {
           <span>Starts {workshopInfo.startDate}</span>
           <span>{workshopInfo.fee}</span>
           <a
-            href="mailto:hello@example.com"
+            href="https://www.kidrove.com/"
+            target="_blank"
+            rel="noreferrer"
             className="inline-flex items-center gap-2 font-semibold text-amber-200 hover:text-amber-100"
           >
-            <Mail className="h-4 w-4" />
-            hello@example.com
+            <ExternalLink className="h-4 w-4" />
+            kidrove.com
           </a>
         </div>
       </div>
